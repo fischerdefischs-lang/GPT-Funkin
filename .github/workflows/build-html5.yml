@@ -33,7 +33,10 @@ jobs:
         run: |
           haxelib --global run hmm install -q
           haxelib --always run lime setup
-
+          
+      - name: Build Lime native libraries
+        run: haxelib run lime rebuild cpp
+        
       - name: Compile HTML5
         run: |
           haxelib run lime build html5 -v -release -DGITHUB_BUILD -DFEATURE_TOUCH_CONTROLS
