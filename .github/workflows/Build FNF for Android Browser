@@ -1,0 +1,47 @@
+
+name: Build FNF for Android Browser
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download source code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Haxe
+        uses: FunkinCrew/ci-haxe@v3.2.7
+        with:
+          haxe-version: '4.3.7'
+
+      - name: Configure Haxelib
+        run: |
+          haxelib --global --never install haxelib 4.1.0
+          haxelib --global --never git haxelib https://github.com/FunkinCrew/haxelib.git funkin-patches --skip-dependencies
+          haxelib --global --never git hmm https://github.com/FunkinCrew/hmm funkin-patches
+          haxelib --never newrepo
+
+      - name: Install dependencies
+        run: |
+          haxelib --global run hmm install -q
+          haxelib --always run lime setup
+
+      - name: Compile HTML5
+        run: |
+          haxelib run lime build html5 -v -release -DGITHUB_BUILD -DFEATURE_TOUCH_CONTROLS
+        timeout-minutes: 120
+
+      - name: Upload HTML5 build
+        uses: actions/upload-artifact@v4
+        with:
+          name: FNF-HTML5
+          path: export/release/html5/bin/
+          if-no-files-found: error
