@@ -32,7 +32,6 @@ jobs:
       - name: Install dependencies
         run: |
           haxelib --global run hmm install -q
-          haxelib --always run lime setup
           
       - name: Build Lime native libraries
         run: haxelib run lime rebuild cpp
