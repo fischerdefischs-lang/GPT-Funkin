@@ -32,6 +32,11 @@ jobs:
       - name: Install dependencies
         run: |
           haxelib --global run hmm install -q
+
+      - name: Install Wayland dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-bin libwayland-dev wayland-protocols libxkbcommon-dev
           
       - name: Build Lime native libraries
         run: haxelib run lime rebuild cpp
